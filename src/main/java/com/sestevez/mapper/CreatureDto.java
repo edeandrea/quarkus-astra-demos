@@ -5,13 +5,24 @@ import java.util.Objects;
 public class CreatureDto {
 
     private String type;
-    private String name;
     private int age;
+    private String name;
 
-    public CreatureDto(String name, String type, int age) {
+    public CreatureDto() {
+    }
+
+    public CreatureDto(String name, int age, String type) {
         this.name = name;
-        this.type = type;
         this.age = age;
+        this.type = type;
+    }
+
+    public static CreatureDto fromEntity(Creature entity) {
+        return new CreatureDto(entity.name, entity.age, entity.type);
+    }
+
+    public Creature toEntity() {
+        return new Creature(name, age, type);
     }
 
     public String getType() {
@@ -37,4 +48,20 @@ public class CreatureDto {
     public void setName(String name) {
         this.name = name;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof CreatureDto)) return false;
+        CreatureDto that = (CreatureDto) o;
+        return age == that.age &&
+                type.equals(that.type) &&
+                name.equals(that.name);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(type, age, name);
+    }
+
 }

@@ -1,10 +1,11 @@
 package com.sestevez.mapper;
 
+import io.smallrye.mutiny.Multi;
+
 import javax.inject.Inject;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
-import java.util.List;
-import java.util.stream.Collectors;
+import java.util.Optional;
 
 @Path("/creatures")
 @Produces(MediaType.APPLICATION_JSON)
@@ -15,18 +16,18 @@ public class AstraDemoResource {
     CreatureService creatureService;
 
     @GET
-    public List<CreatureDto> getAll(@QueryParam("name") String name) {
-        return creatureService.get(name).stream()
-                .map(creature -> new CreatureDto(creature.getName(), creature.getType(), creature.getAge()))
-                .collect(Collectors.toList());
+    @Path("/{name}")
+    public Optional<CreatureDto> get(@PathParam("name") String name) {
+        return creatureService.get(name).map(CreatureDto::fromEntity);
+    }
+
+    @GET
+    public Multi<CreatureDto> get() {
+        return creatureService.getAll().map(CreatureDto::fromEntity);
     }
 
     @POST
     public void add(CreatureDto creature) {
-        creatureService.save(convertFromDto(creature));
-    }
-
-    private Creature convertFromDto(CreatureDto creatureDto) {
-        return new Creature(creatureDto.getName(), creatureDto.getAge(), creatureDto.getType());
+        creatureService.save(creature.toEntity());
     }
 }

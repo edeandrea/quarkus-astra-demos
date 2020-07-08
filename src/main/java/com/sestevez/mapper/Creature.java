@@ -8,7 +8,9 @@ public class Creature {
 
     @PartitionKey
     String name;
+
     int age;
+
     String type;
 
     public Creature() {}

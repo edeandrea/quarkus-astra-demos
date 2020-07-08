@@ -1,24 +1,26 @@
 package com.sestevez.mapper;
 
+import io.smallrye.mutiny.Multi;
+
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
-import java.util.List;
+import java.util.Optional;
 
 @ApplicationScoped
 public class CreatureService {
 
-    private final CreatureDao dao;
-
     @Inject
-    public CreatureService(CreatureDao dao) {
-        this.dao = dao;
-    }
+    CreatureDao dao;
 
     public void save(Creature creature) {
         dao.update(creature);
     }
 
-    public List<Creature> get(String id) {
-        return dao.findById(id).all();
+    public Optional<Creature> get(String id) {
+        return dao.findById(id);
+    }
+
+    public Multi<Creature> getAll() {
+        return dao.findAll();
     }
 }
